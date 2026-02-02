@@ -1,0 +1,6 @@
+﻿PRODUCTS_COUNT: 1
+PRODUCT: {"id":1,"name":"Operate","slug":"operate","apiKeySecret":"sk_operate_prod_secret_123"}
+TENANTS_COUNT: 1
+TENANT: {"id":1,"name":"HTL-ELEVADORES","slug":"htl-elevadores","status":"active"}
+INFRA_COUNT: 1
+INFRA: {"id":4,"tenantId":1,"productId":1,"dbUrl":"libsql://operatedb-1-fortex.aws-us-east-1.turso.io","dbTokenEncrypted":"53228ca5c173038da2720914df955855d41ec3740ed987773f1a005d142620ad852ed5d7","encryptionIv":"880772fed65d418fa0356ede"}

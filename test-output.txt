@@ -1,0 +1,43 @@
+﻿node.exe : (node:12004) [DEP0040] 
+DeprecationWarning: The `punycode` module is 
+deprecated. Please use a userland alternative 
+instead.
+En C:\Program Files\nodejs\npx.ps1: 29 Carácter: 3
++   & $NODE_EXE $NPX_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ((node 
+   :12004) [D...native instead.:String) [], Remot  
+  eException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+(Use `node --trace-deprecation ...` to show where 
+the warning was created)
+C:\Users\fabri\OneDrive\Escritorio\a\src\infrastruc
+ture\security\crypto.service.ts:13
+      throw new Error('AURA_MASTER_KEY must be a 
+64-character hex string (32 bytes)');
+            ^
+Error: AURA_MASTER_KEY must be a 64-character hex 
+string (32 bytes)
+    at new CryptoService (C:\Users\fabri\OneDrive\E
+scritorio\a\src\infrastructure\security\crypto.serv
+ice.ts:13:13)
+    at test (C:\Users\fabri\OneDrive\Escritorio\a\t
+est-repo.ts:19:25)
+    at Object.<anonymous> (C:\Users\fabri\OneDrive\
+Escritorio\a\test-repo.ts:47:1)
+    at Module._compile 
+(node:internal/modules/cjs/loader:1562:14)
+    at Module.m._compile (C:\Users\fabri\OneDrive\E
+scritorio\a\node_modules\ts-node\src\index.ts:1618:
+23)
+    at node:internal/modules/cjs/loader:1699:10
+    at Object.require.extensions.<computed> [as 
+.ts] (C:\Users\fabri\OneDrive\Escritorio\a\node_mod
+ules\ts-node\src\index.ts:1621:12)
+    at Module.load 
+(node:internal/modules/cjs/loader:1313:32)
+    at Function._load 
+(node:internal/modules/cjs/loader:1123:12)
+    at TracingChannel.traceSync 
+(node:diagnostics_channel:322:14)

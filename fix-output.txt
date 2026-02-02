@@ -1,0 +1,16 @@
+﻿node.exe : (node:27980) [DEP0040] 
+DeprecationWarning: The `punycode` module is 
+deprecated. Please use a userland alternative 
+instead.
+En C:\Program Files\nodejs\npx.ps1: 29 Carácter: 3
++   & $NODE_EXE $NPX_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ((node 
+   :27980) [D...native instead.:String) [], Remot  
+  eException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+(Use `node --trace-deprecation ...` to show where 
+the warning was created)
+Decryption SUCCESS!
+dbToken: turso_token_real_123
