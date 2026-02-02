@@ -30,7 +30,7 @@ exports.AppModule = AppModule = __decorate([
                 envFilePath: ['.env', '../.env', (0, path_1.join)(__dirname, '..', '..', '.env')],
             }),
             serve_static_1.ServeStaticModule.forRoot({
-                rootPath: (0, path_1.join)(__dirname, '..', '..', 'public/browser'),
+                rootPath: (0, path_1.join)(__dirname, '..', 'public/browser'),
                 renderPath: '/',
                 exclude: ['/api*'],
             }),

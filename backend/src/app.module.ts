@@ -18,7 +18,7 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
       envFilePath: ['.env', '../.env', join(__dirname, '..', '..', '.env')],
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', 'public/browser'),
+      rootPath: join(__dirname, '..', 'public/browser'),
       renderPath: '/',
       exclude: ['/api*'],
     }),

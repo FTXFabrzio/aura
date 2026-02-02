@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:3000/api/v1';
+  private apiUrl = '/api/v1';
   private headers = new HttpHeaders({
     'X-AURA-KEY': 'sk_aura_internal_v1_xyz789'
   });
