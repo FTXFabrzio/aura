@@ -58,8 +58,12 @@ let ProductsService = class ProductsService {
         return this.db.query.products.findMany();
     }
     async create(data) {
+        const secret = data.apiKeySecret || `sk_aura_${Math.random().toString(36).substring(2, 15)}_${Math.random().toString(36).substring(2, 15)}`;
         const [result] = await this.db.insert(schema.products)
-            .values(data)
+            .values({
+            ...data,
+            apiKeySecret: secret,
+        })
             .returning();
         return result;
     }

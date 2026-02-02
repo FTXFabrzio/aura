@@ -13,7 +13,7 @@ export declare class ProductsService {
     create(data: {
         name: string;
         slug: string;
-        apiKeySecret: string;
+        apiKeySecret?: string;
     }): Promise<{
         id: number;
         name: string;

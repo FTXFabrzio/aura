@@ -79,24 +79,32 @@ let DiscoveryService = class DiscoveryService {
             },
         });
         if (!subscription) {
-            throw new common_1.ForbiddenException(`El cliente no tiene una suscripción activa.`);
+            throw new common_1.ForbiddenException(`El cliente '${identifier}' no tiene una suscripción activa en Aura.`);
+        }
+        if (!subscription.plan) {
+            throw new common_1.ForbiddenException(`Error de integridad: La suscripción no tiene un Plan asociado.`);
         }
         if (subscription.plan.productId !== product.id) {
-            throw new common_1.ForbiddenException(`El cliente no tiene una suscripción activa para el producto ${product.name}.`);
+            throw new common_1.ForbiddenException(`El cliente tiene una suscripción activa, pero es para otro producto, no para ${product.name}.`);
         }
         const infra = await this.db.query.infraConfigs.findFirst({
             where: (0, drizzle_orm_1.and)((0, drizzle_orm_1.eq)(schema.infraConfigs.tenantId, tenantId), (0, drizzle_orm_1.eq)(schema.infraConfigs.productId, product.id)),
         });
         if (!infra) {
-            throw new common_1.NotFoundException(`Configuración de infraestructura no encontrada.`);
+            throw new common_1.NotFoundException(`Aura no tiene registrada ninguna base de datos para ${product.name} en esta empresa. Ve a 'Config. Infra'.`);
         }
-        const decryptedToken = this.cryptoService.decrypt(infra.dbTokenEncrypted, infra.encryptionIv);
-        return {
-            tenantId,
-            productId: product.id,
-            dbUrl: infra.dbUrl,
-            dbToken: decryptedToken,
-        };
+        try {
+            const decryptedToken = this.cryptoService.decrypt(infra.dbTokenEncrypted, infra.encryptionIv);
+            return {
+                tenantId,
+                productId: product.id,
+                dbUrl: infra.dbUrl,
+                dbToken: decryptedToken,
+            };
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('Error al descifrar el token. Es probable que la AURA_MASTER_KEY haya cambiado desde que se guardó el blindaje.');
+        }
     }
 };
 exports.DiscoveryService = DiscoveryService;

@@ -50,27 +50,32 @@ import { ApiService } from '../services/api.service';
       <!-- Modal -->
       @if (showModal()) {
         <div class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl shadow-2xl p-8">
-            <h3 class="text-xl font-bold text-white mb-6">Nuevo Producto SaaS</h3>
+          <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl shadow-2xl p-8 transform animate-in zoom-in-95">
+            <h3 class="text-xl font-bold text-white mb-6 italic tracking-tight underline decoration-indigo-500 decoration-4 underline-offset-8">Nuevo Producto SaaS</h3>
             <div class="space-y-4">
               <div>
-                <label class="block mb-2 text-sm font-medium text-slate-300">Nombre</label>
-                <input [(ngModel)]="newProduct.name" type="text" placeholder="Ej: Operate Admin" 
-                  class="bg-slate-800 border border-slate-700 text-white text-sm rounded-xl block w-full p-3 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                <label class="block mb-2 text-[10px] font-black text-slate-500 uppercase tracking-widest">Nombre del Producto</label>
+                <input [(ngModel)]="newProduct.name" (ngModelChange)="onNameChange($event)" type="text" placeholder="Ej: Operate Admin" 
+                  class="bg-slate-800 border border-slate-700 text-white text-sm rounded-xl block w-full p-3 focus:ring-indigo-500 transition-all">
               </div>
               <div>
-                <label class="block mb-2 text-sm font-medium text-slate-300">Slug (ID único)</label>
+                <label class="block mb-2 text-[10px] font-black text-slate-500 uppercase tracking-widest">Slug (ID único)</label>
                 <input [(ngModel)]="newProduct.slug" type="text" placeholder="ej: operate" 
-                  class="bg-slate-800 border border-slate-700 text-white text-sm rounded-xl block w-full p-3 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                  class="bg-slate-800 border border-slate-700 text-slate-400 text-sm rounded-xl block w-full p-3 font-mono text-xs">
               </div>
               <div>
-                <label class="block mb-2 text-sm font-medium text-slate-300">Aura Secret Key</label>
-                <input [(ngModel)]="newProduct.apiKeySecret" type="text" placeholder="sk_aura_..." 
-                  class="bg-slate-800 border border-slate-700 text-white text-sm rounded-xl block w-full p-3 focus:ring-indigo-500 focus:border-indigo-500 transition-all font-mono">
+                <label class="block mb-2 text-[10px] font-black text-slate-500 uppercase tracking-widest">Aura Secret Key (Auto-generada)</label>
+                <div class="flex gap-2">
+                  <input [(ngModel)]="newProduct.apiKeySecret" type="text" readonly
+                    class="bg-slate-950 border border-slate-800 text-indigo-400 text-xs rounded-xl block w-full p-3 font-mono">
+                  <button (click)="generateKey()" class="p-3 bg-slate-800 text-white rounded-xl hover:bg-slate-700 transition-all" title="Regenerar">
+                    <i class="pi pi-refresh"></i>
+                  </button>
+                </div>
               </div>
               <div class="flex gap-3 mt-8">
-                <button (click)="showModal.set(false)" class="flex-1 px-4 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition-all">Cancelar</button>
-                <button (click)="saveProduct()" class="flex-1 px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all shadow-lg shadow-indigo-500/20">Guardar</button>
+                <button (click)="showModal.set(false)" class="flex-1 px-4 py-4 bg-slate-800 text-white rounded-xl font-bold text-xs uppercase transition-all">Cancelar</button>
+                <button (click)="saveProduct()" class="flex-1 px-4 py-4 bg-indigo-600 text-white rounded-xl font-black text-xs uppercase shadow-lg shadow-indigo-500/20 transition-all">Crear Producto</button>
               </div>
             </div>
           </div>
@@ -90,10 +95,26 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit() {
     this.loadProducts();
+    this.generateKey();
   }
 
   loadProducts() {
     this.api.getProducts().subscribe(res => this.products.set(res));
+  }
+
+  onNameChange(name: string) {
+    this.newProduct.slug = name.toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  generateKey() {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let rand = '';
+    for (let i = 0; i < 24; i++) rand += chars.charAt(Math.floor(Math.random() * chars.length));
+    this.newProduct.apiKeySecret = `sk_aura_${rand}`;
   }
 
   saveProduct() {
@@ -101,6 +122,7 @@ export class ProductsComponent implements OnInit {
       this.loadProducts();
       this.showModal.set(false);
       this.newProduct = { name: '', slug: '', apiKeySecret: '' };
+      this.generateKey();
     });
   }
 }

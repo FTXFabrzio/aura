@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, Inject, InternalServerErrorException } from '@nestjs/common';
 import { LibSQLDatabase } from 'drizzle-orm/libsql';
 import * as schema from '../db/schema';
 import { eq, and } from 'drizzle-orm';
@@ -32,51 +32,60 @@ export class DiscoveryService {
 
     const tenantId = tenant.id;
 
-    // 3. Verificar suscripción activa PARA ESTE PRODUCTO
+    // 3. Verificar suscripción activa
     const subscription = await this.db.query.subscriptions.findFirst({
       where: and(
         eq(schema.subscriptions.tenantId, tenantId),
-        eq(schema.subscriptions.status, 'active')
+        eq(schema.subscriptions.status, 'active'),
       ),
       with: {
-        plan: true, // Traer el plan para verificar el productId
+        plan: true,
       },
     });
 
     if (!subscription) {
-      throw new ForbiddenException(`El cliente no tiene una suscripción activa.`);
+      throw new ForbiddenException(`El cliente '${identifier}' no tiene una suscripción activa en Aura.`);
     }
 
-    // 3.1 Validar que el plan de la suscripción pertenezca al producto correcto
+    if (!subscription.plan) {
+      throw new ForbiddenException(`Error de integridad: La suscripción no tiene un Plan asociado.`);
+    }
+
     if (subscription.plan.productId !== product.id) {
       throw new ForbiddenException(
-        `El cliente no tiene una suscripción activa para el producto ${product.name}.`
+        `El cliente tiene una suscripción activa, pero es para otro producto, no para ${product.name}.`,
       );
     }
-
 
     // 4. Obtener configuración de infraestructura
     const infra = await this.db.query.infraConfigs.findFirst({
       where: and(
         eq(schema.infraConfigs.tenantId, tenantId),
-        eq(schema.infraConfigs.productId, product.id)
+        eq(schema.infraConfigs.productId, product.id),
       ),
     });
 
     if (!infra) {
-      throw new NotFoundException(`Configuración de infraestructura no encontrada.`);
+      throw new NotFoundException(
+        `Aura no tiene registrada ninguna base de datos para ${product.name} en esta empresa. Ve a 'Config. Infra'.`,
+      );
     }
 
-    // 5. Descifrar el token
-    const decryptedToken = this.cryptoService.decrypt(infra.dbTokenEncrypted, infra.encryptionIv);
+    // 5. Descifrar el token con manejo de errores
+    try {
+      const decryptedToken = this.cryptoService.decrypt(infra.dbTokenEncrypted, infra.encryptionIv);
 
-    // 6. Entregar JSON final
-    return {
-      tenantId,
-      productId: product.id,
-      dbUrl: infra.dbUrl,
-      dbToken: decryptedToken,
-    };
+      return {
+        tenantId,
+        productId: product.id,
+        dbUrl: infra.dbUrl,
+        dbToken: decryptedToken,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Error al descifrar el token. Es probable que la AURA_MASTER_KEY haya cambiado desde que se guardó el blindaje.',
+      );
+    }
   }
 
 }
