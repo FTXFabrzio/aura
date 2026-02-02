@@ -1,9 +1,0 @@
-{
-  "name": "fortex-aura-api",
-  "private": true,
-  "scripts": {
-    "build": "cd backend && npm install && npm run build",
-    "install": "cd backend && npm install",
-    "start": "cd backend && npm run start:prod"
-  }
-}
