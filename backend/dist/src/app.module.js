@@ -9,7 +9,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
-const serve_static_1 = require("@nestjs/serve-static");
 const path_1 = require("path");
 const db_module_1 = require("./db/db.module");
 const crypto_module_1 = require("./crypto/crypto.module");
@@ -28,11 +27,6 @@ exports.AppModule = AppModule = __decorate([
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 envFilePath: ['.env', '../.env', (0, path_1.join)(__dirname, '..', '..', '.env')],
-            }),
-            serve_static_1.ServeStaticModule.forRoot({
-                rootPath: (0, path_1.join)(__dirname, '..', 'public/browser'),
-                renderPath: '/',
-                exclude: ['/api*'],
             }),
             db_module_1.DbModule,
             crypto_module_1.CryptoModule,

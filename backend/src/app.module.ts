@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { DbModule } from './db/db.module';
 import { CryptoModule } from './crypto/crypto.module';
@@ -16,11 +15,6 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env', '../.env', join(__dirname, '..', '..', '.env')],
-    }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public/browser'),
-      renderPath: '/',
-      exclude: ['/api*'],
     }),
     DbModule,
     CryptoModule,

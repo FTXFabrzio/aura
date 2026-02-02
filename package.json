@@ -1,10 +1,10 @@
 {
-  "name": "aura-monorepo",
+  "name": "fortex-aura-monorepo",
   "private": true,
   "scripts": {
+    "build": "npm run build:frontend && npm run build:backend",
     "build:frontend": "cd frontend && npm install && npm run build",
     "build:backend": "cd backend && npm install && npm run build",
-    "build": "npm run build:frontend && npm run build:backend && cp -r frontend/dist/frontend/browser backend/public",
-    "start": "cd backend && npm run start:prod"
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install"
   }
 }
